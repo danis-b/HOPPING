@@ -4,7 +4,7 @@ This script converts seedname_hr.dat hamiltonian from  the wannier90 package to 
 
 # Usage 
 
-As an example let's consider PBE band structure of Cu2GeO4 system [Phys. Rev. B 100, 214401 (2019)](https://journals.aps.org/prb/abstract/10.1103/PhysRevB.100.214401), which was parametrized by Wannier functions based on Cu(d), O(p) and Ge(s) initial projectors. Total number of Wannier functions is 46, corresponding to 20(5x4) *d* orbitals of copper, 24(3x8) *p* orbitals of oxygen and 2(1x2) *s* orbitals of germanium atoms:
+As an example let's consider PBE band structure of Cu2GeO4 system [[Phys. Rev. B 100, 214401 (2019)](https://journals.aps.org/prb/abstract/10.1103/PhysRevB.100.214401)], which was parametrized by Wannier functions based on Cu(d), O(p) and Ge(s) initial projectors. Total number of Wannier functions is 46, corresponding to 20(5x4) *d* orbitals of copper, 24(3x8) *p* orbitals of oxygen and 2(1x2) *s* orbitals of germanium atoms:
 
 ![alt text](https://github.com/reason2205/HOPPING/blob/main/example/BANDS.png)
 
