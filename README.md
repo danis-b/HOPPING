@@ -25,7 +25,7 @@ seedname.json file contains the following information:
 * max_sphere_num - maximum number of coordination sphere to print the hamiltonian blocks between pair of atoms;
 * print_complex - print the imaginary part of hamiltonian blocks. 
 
-Both version of script needs to be started at the same folder with seedname.json and seedname_hr.dat file. **Please, make sure that the additional lines before hopping parameters in seedname_hr.dat file were removed.**
+Both version of script needs to be started at the same folder with seedname.json and seedname_hr.dat file. **Please, make sure that the additional lines before hopping parameters in seedname_hr.dat file are removed.**
 
 
 
