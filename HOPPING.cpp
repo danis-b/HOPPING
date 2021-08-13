@@ -100,7 +100,7 @@ int main() {
     time_t td;
     int i, j, k, x, y, z;
     int n_size[3], n_min[3], n_max[3], vecs[3], orbs[2];
-    int num_atoms, num_wannier_funcs, num_points, max_sphere_num, neighbor_num, sphere_num, move_x, move_y, print_complex, atom;
+    int num_atoms, num_wannier_funcs, num_points, max_sphere_num, neighbor_num, sphere_num, move_x, move_y, move_x1, move_y1, print_complex, atom;
 
     int *wanniers, **index;
 
@@ -383,9 +383,13 @@ int main() {
                 move_y += wanniers[x];
             }
 
+            move_x1 = wanniers[atom] + move_x;
+            move_y1 = wanniers[index[z][3]] + move_y;
+
+
             if (print_complex == 1) {
-                for (x = move_x; x < wanniers[atom] + move_x; x++) {
-                    for (y = move_y; y < wanniers[index[z][3]] + move_y; y++) {
+                for (x = move_x; x < move_x1; x++) {
+                    for (y = move_y; y < move_y1; y++) {
 
 
                         out << std::fixed << std::setprecision(6)
@@ -397,8 +401,8 @@ int main() {
                 }
                 out << std::endl;
             } else {
-                for (x = move_x; x < wanniers[atom] + move_x; x++) {
-                    for (y = move_y; y < wanniers[index[z][3]] + move_y; y++) {
+                for (x = move_x; x < move_x1; x++) {
+                    for (y = move_y; y < move_y1; y++) {
 
 
                         out << std::fixed << std::setprecision(6)
