@@ -25,7 +25,7 @@ def coordination_sort(atom, num_atoms, n_min, n_max, cell_vectors, positions):
 if __name__ == '__main__':
     print("Program HOPPING.x v.3.0 (python) starts on ", datetime.now())
     print('=' * 69)
-    input_file_name = input('Enter the name of input file:\n')
+    input_file_name = input('Enter the name of input file (name.json and name_hr.dat)\n')
 
     with open(f'{input_file_name}_hr.dat') as fp:
         rows = (line.split() for line in fp)

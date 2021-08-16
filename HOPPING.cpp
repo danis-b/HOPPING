@@ -1,17 +1,28 @@
-#include <math.h>
 #include <complex>
 #include <iostream>
 #include <fstream>
-#include <stdlib.h>
 #include <iomanip>
+#include <vector>
 #include <nlohmann/json.hpp> //we use json format for input file
 
 using json = nlohmann::json;
 
 
+template<typename T>
+std::vector <size_t> sort_indexes(const std::vector <T> &v) {
+
+    std::vector <size_t> idx(v.size());
+    std::iota(idx.begin(), idx.end(), 0);
+    std::stable_sort(idx.begin(), idx.end(),
+                     [&v](size_t i1, size_t i2) { return v[i1] < v[i2]; });
+
+    return idx;
+}
+
 void
-coordination_sort(int atom, int num_atoms, int n_min[3], int n_max[3], double cell_vectors[3][3], double **positions,
-                  double *radius, int **index) {
+coordination_sort(int atom, int num_atoms, int n_min[3], int n_max[3], double cell_vectors[3][3],
+                  std::vector <std::vector<double>> &positions,
+                  std::vector<double> &radius, std::vector <std::vector<int>> &index) {
 
 
     int i, j, k, x, z;
@@ -28,23 +39,33 @@ coordination_sort(int atom, int num_atoms, int n_min[3], int n_max[3], double ce
     num_points = num_atoms * (n_size[0] * n_size[1] * n_size[2]);
 
 
+    // index = [i, j, k, atom]
+    std::vector <std::vector<int>> idx(
+            num_points, std::vector<int>(
+                    4)
+    );
+
+
+    std::vector<double> rad(num_points);
+
+
     // Index filling
     i = n_min[0];
     j = n_min[1];
     k = n_min[2];
     x = 0;
     for (z = 0; z < num_points; z++) {
-        index[z][0] = i;
-        index[z][1] = j;
-        index[z][2] = k;
-        index[z][3] = x;
+        idx[z][0] = i;
+        idx[z][1] = j;
+        idx[z][2] = k;
+        idx[z][3] = x;
         r[0] = i * cell_vectors[0][0] + j * cell_vectors[1][0] + k * cell_vectors[2][0] +
                (positions[x][0] - positions[atom][0]);
         r[1] = i * cell_vectors[0][1] + j * cell_vectors[1][1] + k * cell_vectors[2][1] +
                (positions[x][1] - positions[atom][1]);
         r[2] = i * cell_vectors[0][2] + j * cell_vectors[1][2] + k * cell_vectors[2][2] +
                (positions[x][2] - positions[atom][2]);
-        radius[z] = sqrt(r[0] * r[0] + r[1] * r[1] + r[2] * r[2]);
+        rad[z] = sqrt(r[0] * r[0] + r[1] * r[1] + r[2] * r[2]);
         x++;
         if (x == num_atoms) {
             x = 0;
@@ -62,33 +83,14 @@ coordination_sort(int atom, int num_atoms, int n_min[3], int n_max[3], double ce
     }
 
 
-    int Temp_Index[4];
-    double Temp_Radius;
-
-    //Simple bubble sort
-
-    for (z = 0; z < num_points; z++) {
-        for (x = z; x < num_points; x++) {
-            if (radius[z] > radius[x]) {
-                Temp_Index[0] = index[z][0];
-                Temp_Index[1] = index[z][1];
-                Temp_Index[2] = index[z][2];
-                Temp_Index[3] = index[z][3];
-                Temp_Radius = radius[z];
-
-                index[z][0] = index[x][0];
-                index[z][1] = index[x][1];
-                index[z][2] = index[x][2];
-                index[z][3] = index[x][3];
-                radius[z] = radius[x];
-
-                index[x][0] = Temp_Index[0];
-                index[x][1] = Temp_Index[1];
-                index[x][2] = Temp_Index[2];
-                index[x][3] = Temp_Index[3];
-                radius[x] = Temp_Radius;
-            }
+    k = 0;
+    for (auto i: sort_indexes(rad)) {
+        for (j = 0; j < 4; j++) {
+            index[k][j] = idx[i][j];
         }
+        radius[k] = rad[i];
+        k++;
+
     }
 
 
@@ -98,15 +100,11 @@ coordination_sort(int atom, int num_atoms, int n_min[3], int n_max[3], double ce
 int main() {
 
     time_t td;
-    int i, j, k, x, y, z;
+    int i, j, x, y, z;
     int n_size[3], n_min[3], n_max[3], vecs[3], orbs[2];
     int num_atoms, num_wannier_funcs, num_points, max_sphere_num, neighbor_num, sphere_num, move_x, move_y, move_x1, move_y1, print_complex, atom;
 
-    int *wanniers, **index;
-
     double cell_vectors[3][3], ham_values[2], r[3];
-    double **positions, *radius;
-    std::complex<double> *****Ham_R;
 
     std::string input_file_name;
 
@@ -117,7 +115,7 @@ int main() {
     std::cout << ctime(&td) << std::endl;
     std::cout << "=====================================================================" << std::endl;
 
-    std::cout << "Enter the name of input file" << std::endl;
+    std::cout << "Enter the name of input file (name.json and name_hr.dat)" << std::endl;
     std::cin >> input_file_name;
 
 
@@ -174,13 +172,13 @@ int main() {
     json_file.at("print_complex").get_to(print_complex);
 
 
-    // create matrices for atomic position and number of wannier functions
-    positions = new double *[num_atoms];
-    for (i = 0; i < num_atoms; i++) {
-        positions[i] = new double[3];
-    }
+    std::vector <std::vector<double>> positions(
+            num_atoms, std::vector<double>(
+                    3)
+    );
 
-    wanniers = new int[num_atoms];
+
+    std::vector<double> wanniers(num_atoms);
 
 
     // read matrices from json file
@@ -215,27 +213,20 @@ int main() {
 
 
     //total number of Wannier functions
-    num_wannier_funcs = 0;
-    for (i = 0; i < num_atoms; i++) {
-        num_wannier_funcs += wanniers[i];
-    }
-
+    num_wannier_funcs = std::accumulate(wanniers.begin(), wanniers.end(), 0);
 
 
     // Total hamiltonian
-    Ham_R = new std::complex<double> ****[n_size[0]];
-    for (i = 0; i < n_size[0]; i++) {
-        Ham_R[i] = new std::complex<double> ***[n_size[1]];
-        for (j = 0; j < n_size[1]; j++) {
-            Ham_R[i][j] = new std::complex<double> **[n_size[2]];
-            for (k = 0; k < n_size[2]; k++) {
-                Ham_R[i][j][k] = new std::complex<double> *[num_wannier_funcs];
-                for (x = 0; x < num_wannier_funcs; x++) {
-                    Ham_R[i][j][k][x] = new std::complex<double>[num_wannier_funcs];
-                }
-            }
-        }
-    }
+    std::vector < std::vector < std::vector < std::vector < std::vector < std::complex<double> >> >> > Ham_R(
+            n_size[0], std::vector < std::vector < std::vector < std::vector < std::complex<double> >> >> (
+                    n_size[1], std::vector < std::vector < std::vector < std::complex<double> >> > (
+                            n_size[2], std::vector < std::vector < std::complex<double> >> (
+                                    num_wannier_funcs, std::vector< std::complex<double> >(
+                                            num_wannier_funcs)
+                            )
+                    )
+            )
+    );
 
 
     hr.clear();
@@ -254,10 +245,9 @@ int main() {
     hr.close();
 
 
-
     //===============================================================================
     // print data to stdout and out-file
-    
+
 
     std::ofstream out;
     out.open("HOPPING.dat");
@@ -314,9 +304,6 @@ int main() {
     out << std::endl;
 
 
-
-
-
     //==============================================================================
 
     // move_x and move_y control the shift to the necessary block in Ham_R
@@ -326,16 +313,19 @@ int main() {
 
 
     // index = [i, j, k, atom]
-    index = new int *[num_points];
-    for (i = 0; i < num_points; i++) {
-        index[i] = new int[4];
-    }
+    std::vector <std::vector<int>> index(
+            num_points, std::vector<int>(
+                    4)
+    );
 
-    radius = new double[num_points];
+
+    std::vector<double> radius(num_points);
+
 
 
     //'atom' is the index of the central atom
     for (atom = 0; atom < num_atoms; atom++) {
+
 
         //This function sorts atoms depending on the radius from the central atom with index 'atom'
         coordination_sort(atom, num_atoms, n_min, n_max, cell_vectors, positions, radius, index);
@@ -418,6 +408,8 @@ int main() {
 
         }
         move_x += wanniers[atom];
+
+
     }
 
 
@@ -427,13 +419,6 @@ int main() {
 
     std::cout << "JOB DONE" << std::endl;
     std::cout << "=====================================================================" << std::endl;
-
-
-    delete[] Ham_R;
-    delete[] radius;
-    delete[] index;
-    delete[] positions;
-    delete[] wanniers;
 
 
 }

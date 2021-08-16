@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-std=c++11 -c -Wall -I/opt/local/include 
+CFLAGS=-std=c++11 -c -Wall -O2 -I/opt/local/include  
 LDFLAGS=
 SOURCES=HOPPING.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
