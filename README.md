@@ -27,6 +27,31 @@ seedname.json file contains the following information:
 
 Both version of script needs to be started at the same folder with seedname.json and seedname_hr.dat file. **Please, make sure that the additional lines before hopping parameters in seedname_hr.dat file are removed.**
 
+As a result, one can find HOPPING.dat file, which contains the information from seedname.json file and output data:
+
+==================================================================
+
+Atom 1(000)<-->Atom 1(000) in sphere #0 with radius 0.000000 is #1:  
+Radius vector is: 0.000000 0.000000 0.000000
+7.184094  0.000004  0.051431  -0.019958  0.000000  
+0.000004  6.783953  -0.000000  -0.000013  -0.050932  
+0.051431  -0.000000  6.735947  -0.038462  0.000001  
+-0.019958  -0.000013  -0.038462  6.223730  0.000002  
+0.000000  -0.050932  0.000001  0.000002  7.065973  
+
+Atom 1(000)<-->Atom 6(000) in sphere #1 with radius 1.949268 is #1:  
+Radius vector is: -1.348810 1.399190 -0.150420
+0.137210  0.318561  -0.327827  
+0.454855  -0.128865  0.153048  
+-0.481865  0.123510  -0.066666  
+0.019533  0.491217  0.435620  
+0.234957  0.849009  -0.890015  
+
+........
+==================================================================
+
+For example, the last table gives the hamiltonian block 3x5 between Atom 1 (Cu(*d*)) and Atom 6 (O(*p*)) with the distance between them 1.949268 A. 
+
 
 
 
