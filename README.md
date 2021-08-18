@@ -50,7 +50,7 @@ Radius vector is: -1.348810 1.399190 -0.150420 \
 ........
 ==================================================================
 
-For example, the last table gives the hamiltonian block 3x5 between Atom 1 (Cu(*d*)) and Atom 6 (O(*p*)) with the distance between them 1.949268 A. 
+For example, the last table gives the hamiltonian block 3x5 between Atom 1 (Cu(*d*)) and Atom 6 (O(*p*)) with the distance between them 1.949268 Å and radius vector **R** = (-1.348810, 1.399190, -0.150420)Å;
 
 
 
