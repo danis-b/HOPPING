@@ -408,9 +408,9 @@ int main() {
 
         }
         move_x += wanniers[atom];
-
-
     }
+    
+    out.close();
 
 
     td = time(NULL);
