@@ -349,7 +349,7 @@ int main() {
             if (sphere_num == max_sphere_num) break;
 
 
-            out << "Atom " << atom + 1 << "(000)<-->Atom " << index[z][3] + 1 << "(" << index[z][0] << index[z][1]
+            out << "Atom " << atom << "(000)<-->Atom " << index[z][3] << "(" << index[z][0] << index[z][1]
                 << index[z][2] << ") in sphere #" << sphere_num << " with radius " << radius[z] << " is #"
                 << neighbor_num
                 << ":  " << std::endl;
