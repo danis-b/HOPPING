@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iomanip>
 #include <vector>
+#include <algorithm>
 #include <nlohmann/json.hpp> //we use json format for input file
 
 using json = nlohmann::json;
