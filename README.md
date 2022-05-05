@@ -31,7 +31,7 @@ As a result, one can find HOPPING.dat file, which contains the information from 
 
 ==================================================================
 
-Atom 1(000)<-->Atom 1(000) in sphere #0 with radius 0.000000 is #1:  
+Atom 0(000)<-->Atom 0(000) in sphere #0 with radius 0.000000 is #1:  
 Radius vector is: 0.000000 0.000000 0.000000 \
 7.184094  0.000004  0.051431  -0.019958  0.000000  
 0.000004  6.783953  -0.000000  -0.000013  -0.050932  
@@ -39,7 +39,7 @@ Radius vector is: 0.000000 0.000000 0.000000 \
 -0.019958  -0.000013  -0.038462  6.223730  0.000002  
 0.000000  -0.050932  0.000001  0.000002  7.065973  
 
-Atom 1(000)<-->Atom 6(000) in sphere #1 with radius 1.949268 is #1:  
+Atom 0(000)<-->Atom 5(000) in sphere #1 with radius 1.949268 is #1:  
 Radius vector is: -1.348810 1.399190 -0.150420 \
 0.137210  0.318561  -0.327827  
 0.454855  -0.128865  0.153048  
@@ -50,7 +50,7 @@ Radius vector is: -1.348810 1.399190 -0.150420 \
 ........
 ==================================================================
 
-For example, the last table gives the hamiltonian block 3x5 between Atom 1 (Cu(*d*)) and Atom 6 (O(*p*)) with the distance between them 1.949268 Å and radius vector **R** = (-1.348810, 1.399190, -0.150420)Å;
+For example, the last table gives the hamiltonian block 5x3 between Atom 0 (Cu(*d*)) and Atom 5 (O(*p*)) with the distance between them 1.949268 Å and radius vector **R** = (-1.348810, 1.399190, -0.150420)Å;
 
 
 
