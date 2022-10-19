@@ -1,6 +1,6 @@
 # HOPPING.x
 
-This script converts seedname_hr.dat hamiltonian from  the wannier90 package to block-divided form between orbitals and prints these blocks depending on the geometry given by seedname.json file. Python version script can be used as is, while c++ version needs to be compiled with the additional [json](https://github.com/nlohmann/json) library.
+This script converts seedname_hr.dat hamiltonian from  the wannier90 package to block-divided form between orbitals and prints these blocks depending on the geometry given by seedname.json file. Python version script can be used as it is, while c++ version needs to be compiled with the additional [json](https://github.com/nlohmann/json) library.
 
 # Usage 
 
