@@ -1,6 +1,6 @@
 # HOPPING.x
 
-This script converts seedname_hr.dat hamiltonian from  the wannier90 package to block-divided form between orbitals and prints these blocks depending on the geometry given by seedname.json file. Python version script can be used as is, while c++ version needs to be compiled with the additional [json](https://github.com/nlohmann/json) library.
+This script converts seedname_hr.dat hamiltonian from  the wannier90 package to block-divided form between orbitals and prints these blocks depending on the geometry given by seedname.json file. Python version script can be used as it is, while c++ version needs to be compiled with the additional [json](https://github.com/nlohmann/json) library.
 
 # Usage 
 
@@ -50,15 +50,7 @@ Radius vector is: -1.348810 1.399190 -0.150420 \
 ........
 ==================================================================
 
-For example, the last table gives the hamiltonian block 5x3 between Atom 0 (Cu(*d*)) and Atom 5 (O(*p*)) with the distance between them 1.949268 Å and radius vector **R** = (-1.348810, 1.399190, -0.150420)Å, i.e.:
-
- 0.137210   0.318561  -0.327827 |dz2>
- 0.454855  -0.128865   0.153048 |dxz>
--0.481865   0.123510  -0.066666 |dyz>
- 0.019533   0.491217   0.435620 |dx2-y2>
- 0.234957   0.849009  -0.890015 |dxy>
-    <pz|      <px|        <py|  
-
+For example, the last table gives the hamiltonian block 5x3 between Atom 0 (Cu(*d*)) and Atom 5 (O(*p*)) with the distance between them 1.949268 Å and radius vector **R** = (-1.348810, 1.399190, -0.150420)Å.
 
 
 
