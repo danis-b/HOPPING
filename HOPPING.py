@@ -131,7 +131,7 @@ if __name__ == '__main__':
                 d3, at = idx[:3], idx[3]
                 r = d3 @ cell_vectors + (positions[at] - pos)
 
-                print(f'Atom  {atom + 1} (000)<-->Atom  {at + 1}',
+                print(f'Atom  {atom} (000)<-->Atom  {at}',
                       '(',
                       *d3,
                       f') in sphere # {sphere_num}  '

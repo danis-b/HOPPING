@@ -26,21 +26,21 @@ coordination_sort(int atom, int num_atoms, int n_min[3], int n_max[3], double ce
                   std::vector<double> &radius, std::vector <std::vector<int>> &index) {
 
 
-    int i, j, k, x, y, z;
+    int i, j, k, atom2;
     int num_points;
 
     int n_size[3];
     double r[3];
 
 
-    for (i = 0; i < 3; i++) {
-        n_size[i] = n_max[i] - n_min[i] + 1; // Plus 1 for 0th
+    for (int z = 0; z < 3; ++z) {
+        n_size[z] = n_max[z] - n_min[z] + 1; // Plus 1 for 0th
     }
 
     num_points = num_atoms * (n_size[0] * n_size[1] * n_size[2]);
 
 
-    // index = [i, j, k, atom]
+    // index = [i, j, k, atom2]
     std::vector <std::vector<int>> idx(
             num_points, std::vector<int>(
                     4)
@@ -54,22 +54,22 @@ coordination_sort(int atom, int num_atoms, int n_min[3], int n_max[3], double ce
     i = n_min[0];
     j = n_min[1];
     k = n_min[2];
-    x = 0;
-    for (z = 0; z < num_points; z++) {
+    atom2 = 0;
+    for (int z = 0; z < num_points; ++z) {
         idx[z][0] = i;
         idx[z][1] = j;
         idx[z][2] = k;
-        idx[z][3] = x;
+        idx[z][3] = atom2;
 
-        for (y = 0; y < 3; y++) {
+        for (int y = 0; y < 3; ++y) {
             r[y] = i * cell_vectors[0][y] + j * cell_vectors[1][y] + k * cell_vectors[2][y] +
-                   (positions[x][y] - positions[atom][y]);
+                   (positions[atom2][y] - positions[atom][y]);
         }
 
         rad[z] = sqrt(r[0] * r[0] + r[1] * r[1] + r[2] * r[2]);
-        x++;
-        if (x == num_atoms) {
-            x = 0;
+        atom2++;
+        if (atom2 == num_atoms) {
+            atom2 = 0;
             k++;
             if (k == n_max[2] + 1) {
                 k = n_min[2];
@@ -79,7 +79,6 @@ coordination_sort(int atom, int num_atoms, int n_min[3], int n_max[3], double ce
                 j = n_min[1];
                 i++;
             }
-
         }
     }
 
@@ -94,16 +93,15 @@ coordination_sort(int atom, int num_atoms, int n_min[3], int n_max[3], double ce
 
     }
 
-
 }
 
 
 int main() {
 
     time_t td;
-    int i, j, x, y, z;
+    int idx;
     int n_size[3], n_min[3], n_max[3], vecs[3], orbs[2];
-    int num_atoms, num_wannier_funcs, num_points, max_sphere_num, neighbor_num, sphere_num, move_x, move_y, move_x1, move_y1, print_complex, atom;
+    int num_atoms, num_wannier_funcs, num_points, max_sphere_num, neighbor_num, sphere_num, move_x, move_y, move_x1, move_y1, print_complex;
 
     double cell_vectors[3][3], ham_values[2], r[3];
 
@@ -130,14 +128,14 @@ int main() {
 
 
     //define the possible ranges for n_min and n_max from hr.dat file
-    for (i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; ++i) {
         n_max[i] = n_min[i] = 0;
     }
 
     while (!hr.eof()) {
         hr >> vecs[0] >> vecs[1] >> vecs[2] >> orbs[0] >> orbs[1] >> ham_values[0] >> ham_values[1];
 
-        for (i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; ++i) {
             if (n_max[i] < vecs[i]) n_max[i] = vecs[i];
             else if (n_min[i] > vecs[i]) n_min[i] = vecs[i];
         }
@@ -145,7 +143,7 @@ int main() {
     }
 
 
-    for (i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; ++i) {
         n_size[i] = n_max[i] - n_min[i] + 1; // Plus 1 for 0th
     }
 
@@ -184,32 +182,32 @@ int main() {
 
     // read matrices from json file
 
-    i = 0;
+    idx = 0;
     for (auto &element : json_file["wanniers"]) {
-        wanniers[i] = element;
-        i++;
+        wanniers[idx] = element;
+        idx++;
     }
 
 
-    i = 0;
+    idx = 0;
     for (auto &element : json_file["cell_vectors"]) {
-        j = 0;
+        int j = 0;
         for (auto &element1 : element) {
-            cell_vectors[i][j] = element1;
+            cell_vectors[idx][j] = element1;
             j++;
         }
-        i++;
+        idx++;
     }
 
 
-    i = 0;
+    idx = 0;
     for (auto &element : json_file["positions"]) {
-        j = 0;
+        int j = 0;
         for (auto &element1 : element) {
-            positions[i][j] = element1;
+            positions[idx][j] = element1;
             j++;
         }
-        i++;
+        idx++;
     }
 
 
@@ -261,7 +259,7 @@ int main() {
     out << "crystal axes: (cart. coord. )" << std::endl;
 
 
-    for (i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; ++i) {
 
         std::cout << std::fixed << std::setprecision(6) << cell_vectors[i][0] << "  " << cell_vectors[i][1] << "  "
                   << cell_vectors[i][2]
@@ -281,7 +279,7 @@ int main() {
     out << std::endl << "Atomic positions (cart. coord. ):\n x\t y\t z\t number of WF:" << std::endl;
 
 
-    for (i = 0; i < num_atoms; i++) {
+    for (int i = 0; i < num_atoms; ++i) {
         std::cout << std::fixed << std::setprecision(6) << positions[i][0] << "  " << positions[i][1] << "  "
                   << positions[i][2] << "  "
                   << wanniers[i]
@@ -325,7 +323,7 @@ int main() {
 
 
     //'atom' is the index of the central atom
-    for (atom = 0; atom < num_atoms; atom++) {
+    for (int atom = 0; atom < num_atoms; ++atom) {
 
 
         //This function sorts atoms depending on the radius from the central atom with index 'atom'
@@ -338,7 +336,7 @@ int main() {
         sphere_num = 0;
 
 
-        for (z = 0; z < num_points; z++) {
+        for (int z = 0; z < num_points; ++z) {
 
             if (z != 0) {
                 if (fabs(radius[z - 1] - radius[z]) < 1E-4)neighbor_num++;
@@ -370,7 +368,7 @@ int main() {
                 << std::endl;
 
             move_y = 0;
-            for (x = 0; x < index[z][3]; x++) {
+            for (int x = 0; x < index[z][3]; ++x) {
                 move_y += wanniers[x];
             }
 
@@ -379,9 +377,8 @@ int main() {
 
 
             if (print_complex == 1) {
-                for (x = move_x; x < move_x1; x++) {
-                    for (y = move_y; y < move_y1; y++) {
-
+                for (int x = move_x; x < move_x1; ++x) {
+                    for (int y = move_y; y < move_y1; ++y) {
 
                         out << std::fixed << std::setprecision(6)
                             << Ham_R[index[z][0] + n_max[0]][index[z][1] + n_max[1]][index[z][2] + n_max[2]][x][y]
@@ -392,9 +389,8 @@ int main() {
                 }
                 out << std::endl;
             } else {
-                for (x = move_x; x < move_x1; x++) {
-                    for (y = move_y; y < move_y1; y++) {
-
+                for (int x = move_x; x < move_x1; ++x) {
+                    for (int y = move_y; y < move_y1; ++y) {
 
                         out << std::fixed << std::setprecision(6)
                             << (Ham_R[index[z][0] + n_max[0]][index[z][1] + n_max[1]][index[z][2] +
