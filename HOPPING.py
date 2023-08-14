@@ -1,6 +1,67 @@
 import numpy as np
 import json
+from io import StringIO
+from typing import OrderedDict
 from datetime import datetime
+
+#https://triqs.github.io/tprf/latest/reference/python_reference.html#wannier90-tight-binding-parsers
+def parse_hopping_from_wannier90_hr_dat(filename):
+
+    with open(filename, 'r') as fd:
+        lines = fd.readlines()
+
+    lines.pop(0) # pop time header
+
+    num_wann = int(lines.pop(0))
+    nrpts = int(lines.pop(0))
+
+    nlines = int(np.ceil(float(nrpts / 15.)))
+
+    deg = np.array([])
+    for line in lines[:nlines]:
+        deg = np.concatenate((deg, np.loadtxt(StringIO(line), dtype=int, ndmin=1)))
+    
+    assert( deg.shape == (nrpts,) )
+
+    hopp = "".join(lines[nlines:])
+    hopp = np.loadtxt(StringIO(hopp))
+
+    assert( hopp.shape == (num_wann**2 * nrpts, 7) )
+    
+    R = np.array(hopp[:, :3], dtype=int) # Lattice coordinates in multiples of lattice vectors
+    nm = np.array(hopp[:, 3:5], dtype=int) - 1 # orbital index pairs, wannier90 counts from 1, fix by remove 1
+    
+    n_min, n_max = R.min(0), R.max(0)
+
+    t_re = hopp[:, 5]
+    t_im = hopp[:, 6]
+    t = t_re + 1.j * t_im # complex hopping amplitudes for each R, mn (H(R)_{mn})
+
+    # -- Dict with hopping matrices
+
+    r_dict = OrderedDict()
+    hopp_dict = {}
+    for idx in range(R.shape[0]):
+        r = tuple(R[idx])
+
+        if r not in r_dict:
+            r_dict[r] = 1
+        else:
+            r_dict[r] += 1
+
+        if r not in hopp_dict:
+            hopp_dict[r] = np.zeros((num_wann, num_wann), dtype=complex)
+
+        n, m = nm[idx]
+        hopp_dict[r][n, m] = t[idx]
+
+    # -- Account for degeneracy of the Wigner-Seitz points
+    
+    for r, weight in zip(list(r_dict.keys()), deg):
+        hopp_dict[r] /= weight
+
+    return hopp_dict, num_wann, n_min, n_max
+
 
 
 def coordination_sort(atom, num_atoms, n_min, n_max, cell_vectors, positions):
@@ -27,18 +88,20 @@ if __name__ == '__main__':
     print('=' * 69)
     input_file_name = input('Enter the name of input file (name.json and name_hr.dat)\n')
 
-    with open(f'{input_file_name}_hr.dat') as fp:
-        rows = (line.split() for line in fp)
-        data = [([int(u) for u in row[:3]], [int(u) for u in row[3:5]],
-                 [float(u) for u in row[5:]]) for row in rows]
-
-    # [N, 3] vectors, [N, 2] orbitals, [N, 2] hamiltonian
-    vecs, orbs, ham_values = map(np.array, zip(*data))
-    ham_values = ham_values.astype('f8').view(
-        'c16').ravel()  # View as complex [N]
-
-    n_min, n_max = vecs.min(0), vecs.max(0)  # [3]
+    hops, num_wannier_funcs, n_min, n_max = parse_hopping_from_wannier90_hr_dat(f'{input_file_name}_hr.dat') 
     n_size = n_max - n_min + 1  # Plus 1 for 0th
+
+    Ham_R = np.zeros((n_size[0], n_size[1], n_size[2], num_wannier_funcs, num_wannier_funcs), dtype='c16')
+    
+    for r in hops.keys():
+        r_idx = np.array(r)
+        Ham_idx = hops.get(r)
+        
+        for m in range(num_wannier_funcs):
+            for n in range(num_wannier_funcs):
+                Ham_R[r_idx[0] + n_max[0], r_idx[1] + n_max[1], r_idx[2] + n_max[2], m, n] = Ham_idx[m,n]
+
+    
 
     # =======================================================================
     # Read information from input file in json format
@@ -54,12 +117,7 @@ if __name__ == '__main__':
 
     # Some checks
     assert num_atoms == len(wanniers) == len(positions)
-    num_wannier_funcs = wanniers.sum()
-
-    # Total hamiltonian
-    Ham_R = np.zeros((*n_size, num_wannier_funcs, num_wannier_funcs),
-                   dtype='c16')
-    Ham_R[(*(vecs + n_max).T, *(orbs.T - 1))] = ham_values
+    assert num_wannier_funcs == wanniers.sum()
 
     # ===============================================================================
     # Print data to stdout and out-file
