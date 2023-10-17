@@ -3,6 +3,7 @@ import json
 from io import StringIO
 from typing import OrderedDict
 from datetime import datetime
+import argparse
 
 #https://triqs.github.io/tprf/latest/reference/python_reference.html#wannier90-tight-binding-parsers
 def parse_hopping_from_wannier90_hr_dat(filename):
@@ -84,11 +85,16 @@ def coordination_sort(atom, num_atoms, n_min, n_max, cell_vectors, positions):
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("input_file_name")
+    parser.add_argument("output_file_name")
+    args = parser.parse_args()
+
+
     print("Program HOPPING.x v.3.0 (python) starts on ", datetime.now())
     print('=' * 69)
-    input_file_name = input('Enter the name of input file (name.json and name_hr.dat)\n')
 
-    hops, num_wannier_funcs, n_min, n_max = parse_hopping_from_wannier90_hr_dat(f'{input_file_name}_hr.dat') 
+    hops, num_wannier_funcs, n_min, n_max = parse_hopping_from_wannier90_hr_dat(f'{args.input_file_name}_hr.dat') 
     n_size = n_max - n_min + 1  # Plus 1 for 0th
 
     Ham_R = np.zeros((n_size[0], n_size[1], n_size[2], num_wannier_funcs, num_wannier_funcs), dtype='c16')
@@ -105,7 +111,7 @@ if __name__ == '__main__':
 
     # =======================================================================
     # Read information from input file in json format
-    with open(f'{input_file_name}.json') as fp:
+    with open(f'{args.input_file_name}.json') as fp:
         data = json.load(fp)
 
     num_atoms = data['number_of_atoms']  # M
@@ -136,7 +142,7 @@ if __name__ == '__main__':
     print(
         f'\nTotal number of Wannier functions: {num_wannier_funcs}'
         f'\nPrint the complex part of the hamiltonian: {bool(print_complex)}')
-    with open('HOPPING.dat', 'w') as fp:
+    with open(args.output_file_name, 'w') as fp:
         print('Crystal structure of system:', file=fp)
         print('crystal axes: (cart. coord. )', file=fp)
         for cell in cell_vectors:
@@ -165,7 +171,7 @@ if __name__ == '__main__':
     radius = np.zeros(num_points, dtype=float)
 
     # 'atom' is the index of the central atom
-    with open('HOPPING.dat', 'a') as fp:
+    with open(args.output_file_name, 'a') as fp:
         for atom, (pos, wan) in enumerate(zip(positions, wanniers)):
             # This function sorts atoms depending on the radius from the central atom with index 'atom'
             radius, index = coordination_sort(atom, num_atoms, n_min, n_max, cell_vectors,
