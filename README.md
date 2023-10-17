@@ -1,14 +1,15 @@
 # HOPPING.x
 
-This script converts seedname_hr.dat hamiltonian from  the wannier90 package to block-divided form between orbitals and prints these blocks depending on the geometry given by seedname.json file.
+This script converts input_hr.dat hamiltonian from  the wannier90 package to block-divided form between orbitals and prints these blocks depending on the geometry given by input.json file.
 
 # Usage 
+python HOPPING.py input out.dat
 
 As an example let's consider PBE band structure of Cu2GeO4 system [[Phys. Rev. B 100, 214401 (2019)](https://journals.aps.org/prb/abstract/10.1103/PhysRevB.100.214401)], which was parametrized by Wannier functions based on Cu(d), O(p) and Ge(s) initial projectors. Total number of Wannier functions is 46, corresponding to 20(5x4) *d* orbitals of copper, 24(3x8) *p* orbitals of oxygen and 2(1x2) *s* orbitals of germanium atoms:
 
 ![alt text](https://github.com/danis-b/HOPPING/blob/main/example/bands.png)
 
-seedname.json file contains the following information:
+input.json file contains the following information:
 
 ```json
    "cell_vectors": [[5.596748, 0.000000,  0.000000], [0.000000,  5.596748,  0.000000], [2.798374, 2.798374, 4.700648]],
@@ -23,11 +24,9 @@ seedname.json file contains the following information:
 * positions - (3 x number_of_atoms)(dfloat) array of cartesian coordinates of these atoms (in Ang);
 * wanniers - (number_of_magnetic_atoms) (int) array of Wannier functions numbers of these atoms;
 * max_sphere_num - (int) maximum number of coordination sphere to print the hamiltonian blocks between pair of atoms;
-* print_complex - (0 or 1) print the imaginary part of hamiltonian blocks. 
+* print_complex - (0 or 1) print the imaginary part of hamiltonian blocks.  
 
-Both version of script needs to be started at the same folder with seedname.json and seedname_hr.dat file. 
-
-As a result, one can find HOPPING.dat file, which contains the information from seedname.json file and output data:
+As a result, one can find out.dat file, which contains the information from input.json file and output data:
 
 ==================================================================
 
