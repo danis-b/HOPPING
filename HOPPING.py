@@ -85,7 +85,7 @@ def coordination_sort(atom, num_atoms, n_min, n_max, cell_vectors, positions):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(prog='HOPPING.py', usage='%(prog)s input (name of input_hr.dat and input.json) output')
     parser.add_argument("input_file_name")
     parser.add_argument("output_file_name")
     args = parser.parse_args()
@@ -195,12 +195,12 @@ if __name__ == '__main__':
                 d3, at = idx[:3], idx[3]
                 r = d3 @ cell_vectors + (positions[at] - pos)
 
-                print(f'Atom  {atom} (000)<-->Atom  {at}',
+                print(f'Hopping <a|H|b> between atom  {atom} (000)<-->atom  {at}',
                       '(',
                       *d3,
                       f') in sphere # {sphere_num}  '
                       'with radius  {:.6f}'.format(rad),
-                      f' is # {neighbor_num} :',
+                      f' -- {neighbor_num}:',
                       file=fp)
                 print('Radius vector is:  {:.6f} {:.6f} {:.6f}'.format(*r),
                       file=fp)
