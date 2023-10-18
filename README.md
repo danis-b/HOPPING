@@ -47,7 +47,8 @@ Radius vector is: -1.348810 1.399190 -0.150420 \
  0.008259   0.491431   0.435576 \
  0.213296   0.854884  -0.889601 
 
-........
+...
+
 ==================================================================
 
 For example, the last table gives the hamiltonian block 5x3  <Cu(*d*)|H|O(*p*)> between atom 0 (Cu(*d*)) and atom 5 (O(*p*)) with the distance between them 1.949268 Å and radius vector **R** = (-1.348810, 1.399190, -0.150420)Å.
