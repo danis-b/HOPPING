@@ -84,7 +84,22 @@ def coordination_sort(atom, num_atoms, n_min, n_max, cell_vectors, positions):
     return radius_[idx], index_[idx]
 
 
-if __name__ == '__main__':
+def main():
+    """
+    This script converts input_hr.dat hamiltonian from the wannier90 package to block-divided 
+    form between orbitals and prints these blocks depending on the geometry given by input.json file.
+
+    Usage: python HOPPING.py input out.dat
+
+    input.json contains the following information:
+    "cell_vectors": (3x3)(dfloat) array of unit cell vectors (in Ang);
+    "number_of_atoms": (int) total number of atoms, parametrized by Wannier functions;
+    "max_sphere_num": (int) maximum number of coordination sphere to print the hamiltonian blocks between pair of atoms;
+    "print_complex": (0 or 1) print the imaginary part of hamiltonian blocks;
+    "positions": (3 x number_of_atoms)(dfloat) array of cartesian coordinates of these atoms (in Ang);
+    "wanniers":  (number_of_magnetic_atoms) (int) array of Wannier functions numbers of these atoms;
+    """
+    
     parser = argparse.ArgumentParser(prog='HOPPING.py', usage='%(prog)s input (name of input_hr.dat and input.json) output')
     parser.add_argument("input_file_name")
     parser.add_argument("output_file_name")
@@ -220,3 +235,10 @@ if __name__ == '__main__':
     print(f'This run was terminated on: {datetime.now()}')
     print(f'JOB DONE')
     print('=' * 69)
+
+
+
+if __name__ == '__main__':
+    main()
+
+    
