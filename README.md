@@ -31,7 +31,7 @@ As a result, one can find out.dat file, which contains the information from inpu
 ==================================================================
 
 Hopping <a|H|b> between atom  0 (000)<-->atom  0 ( 0 0 0 ) in sphere # 0  with radius  0.000000  -- 1:  
-Radius vector is: 0.000000 0.000000 0.000000 \
+Radius vector is: 0.000000 0.000000 0.000000 
 
 ```math
 \begin{pmatrix}
@@ -44,7 +44,7 @@ Radius vector is: 0.000000 0.000000 0.000000 \
 ```
 
 Hopping <a|H|b> between atom  0 (000)<-->atom  5 ( 0 0 0 ) in sphere # 1  with radius  1.949268  -- 1:  
-Radius vector is: -1.348810 1.399190 -0.150420 \
+Radius vector is: -1.348810 1.399190 -0.150420 
 
 ```math
 \begin{pmatrix}
