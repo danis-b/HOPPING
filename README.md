@@ -1,6 +1,6 @@
 # HOPPING.x
 
-This script converts input_hr.dat hamiltonian from  the wannier90 package to block-divided form between orbitals and prints these blocks depending on the geometry given by input.json file.
+This script prints input_hr.dat hamiltonian from  the wannier90 package to block-divided form between orbitals.
 
 # Usage 
 python HOPPING.py input out.dat
@@ -31,21 +31,30 @@ As a result, one can find out.dat file, which contains the information from inpu
 ==================================================================
 
 Hopping <a|H|b> between atom  0 (000)<-->atom  0 ( 0 0 0 ) in sphere # 0  with radius  0.000000  -- 1:  
-Radius vector is: 0.000000 0.000000 0.000000 \
+Radius vector is: 0.000000 0.000000 0.000000 
 
- 7.184363   0.000004   0.051011  -0.019062  -0.000001 \
- 0.000004   6.784132   0.000001  -0.000013  -0.051461 \
- 0.051011   0.000001   6.735531  -0.040079   0.000000 \
--0.019062  -0.000013  -0.040079   6.224034   0.000001 \
--0.000001  -0.051461   0.000000   0.000001   7.065857 
+```math
+\begin{pmatrix}
+ 7.184363  &  0.000004 &   0.051011 &  -0.019062 &  -0.000001 \\
+ 0.000004  &  6.784132 &   0.000001 &  -0.000013 &  -0.051461 \\
+ 0.051011  &  0.000001 &   6.735531 &  -0.040079 &  0.000000 \\
+-0.019062  & -0.000013 &  -0.040079 &   6.224034 &  0.000001 \\
+-0.000001  & -0.051461 &   0.000000 &   0.000001 &  7.065857 
+\end{pmatrix}
+```
 
 Hopping <a|H|b> between atom  0 (000)<-->atom  5 ( 0 0 0 ) in sphere # 1  with radius  1.949268  -- 1:  
-Radius vector is: -1.348810 1.399190 -0.150420 \
- 0.128273   0.321582  -0.328282 \
- 0.457768  -0.118238   0.154528 \
--0.485105   0.112035  -0.064925 \
- 0.008259   0.491431   0.435576 \
- 0.213296   0.854884  -0.889601 
+Radius vector is: -1.348810 1.399190 -0.150420 
+
+```math
+\begin{pmatrix}
+ 0.128273 &   0.321582 &  -0.328282 \\
+ 0.457768 &  -0.118238 &   0.154528 \\
+-0.485105 &   0.112035 &  -0.064925 \\
+ 0.008259 &   0.491431 &   0.435576 \\
+ 0.213296 &   0.854884 &  -0.889601
+\end{pmatrix}
+```
 
 ...
 
